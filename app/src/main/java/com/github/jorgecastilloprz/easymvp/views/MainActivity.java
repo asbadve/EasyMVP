@@ -1,21 +1,26 @@
-package com.github.jorgecastilloprz.easymvp;
+package com.github.jorgecastilloprz.easymvp.views;
 
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.github.jorgecastilloprz.easymvp.NavigationDrawerFragment;
+import com.github.jorgecastilloprz.easymvp.PlaceHolderFragment;
+import com.github.jorgecastilloprz.easymvp.R;
 
-public class MainActivity extends ActionBarActivity implements NavigationDrawerFragment.NavigationDrawerCallbacks {
+import java.util.List;
+
+
+public class MainActivity extends BaseActivity implements NavigationDrawerFragment.NavigationDrawerCallbacks {
 
     private NavigationDrawerFragment mNavigationDrawerFragment;
     private CharSequence mTitle;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -23,6 +28,11 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
         mTitle = getTitle();
 
         mNavigationDrawerFragment.doInitialSetup(R.id.navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout));
+    }
+
+    @Override
+    protected List<Object> getModules() {
+        return null;
     }
 
     @Override
