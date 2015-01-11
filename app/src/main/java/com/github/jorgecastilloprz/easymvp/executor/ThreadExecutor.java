@@ -5,6 +5,8 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import javax.inject.Inject;
+
 /**
  * Interactor dispatcher. Contains the initial executor setup.
  * Using {@link java.util.concurrent.ThreadPoolExecutor} as the executor implementation.
@@ -21,7 +23,8 @@ public class ThreadExecutor implements InteractorExecutor {
 
     private ThreadPoolExecutor threadPoolExecutor;
 
-    public ThreadExecutor() {
+    @Inject
+    ThreadExecutor() {
         threadPoolExecutor = new ThreadPoolExecutor(CORE_POOL_SIZE, MAX_POOL_SIZE, KEEP_ALIVE_TIME, TIME_UNIT, WORK_QUEUE);
     }
 
