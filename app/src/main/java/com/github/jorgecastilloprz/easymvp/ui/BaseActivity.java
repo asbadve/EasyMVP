@@ -1,4 +1,4 @@
-package com.github.jorgecastilloprz.easymvp.views;
+package com.github.jorgecastilloprz.easymvp.ui;
 
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;

@@ -1,4 +1,4 @@
-package com.github.jorgecastilloprz.easymvp.views;
+package com.github.jorgecastilloprz.easymvp.mvp.views;
 
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
@@ -10,6 +10,7 @@ import android.view.MenuItem;
 import com.github.jorgecastilloprz.easymvp.NavigationDrawerFragment;
 import com.github.jorgecastilloprz.easymvp.PlaceHolderFragment;
 import com.github.jorgecastilloprz.easymvp.R;
+import com.github.jorgecastilloprz.easymvp.ui.BaseActivity;
 
 import java.util.LinkedList;
 import java.util.List;
