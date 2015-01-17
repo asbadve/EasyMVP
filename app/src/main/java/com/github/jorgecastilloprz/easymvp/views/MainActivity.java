@@ -11,6 +11,7 @@ import com.github.jorgecastilloprz.easymvp.NavigationDrawerFragment;
 import com.github.jorgecastilloprz.easymvp.PlaceHolderFragment;
 import com.github.jorgecastilloprz.easymvp.R;
 
+import java.util.LinkedList;
 import java.util.List;
 
 
@@ -32,7 +33,9 @@ public class MainActivity extends BaseActivity implements NavigationDrawerFragme
 
     @Override
     protected List<Object> getModules() {
-        return null;
+        LinkedList<Object> modules = new LinkedList<Object>();
+//        modules.add(new TvShowUIModule());
+        return modules;
     }
 
     @Override
