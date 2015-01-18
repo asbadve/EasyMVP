@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 
 import com.github.jorgecastilloprz.easymvp.EasyMVPApplication;
+import com.github.jorgecastilloprz.easymvp.mvp.views.MainActivity;
 
 import dagger.Module;
 import dagger.Provides;
@@ -17,7 +18,7 @@ import dagger.Provides;
                 ExecutorModule.class
         },
         injects = {
-                EasyMVPApplication.class
+                EasyMVPApplication.class, MainActivity.class
         },
         library = true)
 public class RootModule {
