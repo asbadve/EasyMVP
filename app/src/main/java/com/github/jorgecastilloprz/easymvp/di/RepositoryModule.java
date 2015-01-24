@@ -15,7 +15,9 @@ import dagger.Provides;
  * Created by jorge on 18/01/15.
  */
 
-@Module(complete = false, library = true)
+@Module(
+        injects = {RestGameRepository.class},
+        complete = false, library = true)
 public class RepositoryModule {
 
     private final String giantBombApiKey = "07dce392be760422f40d67bc7945d7f1aaac7f4e";
@@ -36,7 +38,7 @@ public class RepositoryModule {
     public GameRepository provideGameRepository(@Named("api_base_url") String endPoint) {
         return new RestGameRepository(endPoint);
     }
-    
+
     @Provides
     @Named("mock_api")
     public GameRepository provideGameRepository() {

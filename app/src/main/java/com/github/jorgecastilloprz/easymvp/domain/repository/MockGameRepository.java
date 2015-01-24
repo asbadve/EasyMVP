@@ -1,20 +1,21 @@
 package com.github.jorgecastilloprz.easymvp.domain.repository;
 
-import com.github.jorgecastilloprz.easymvp.mvp.model.Game;
-
-import java.util.List;
+import com.github.jorgecastilloprz.easymvp.domain.restmodel.GiantBombGameListResponse;
+import com.github.jorgecastilloprz.easymvp.domain.restmodel.GiantBombResponse;
+import com.github.jorgecastilloprz.easymvp.domain.restmodel.GiantBombSingleGameResponse;
+import com.github.jorgecastilloprz.easymvp.domain.restmodel.Result;
 
 /**
  * Created by jorge on 18/01/15.
  */
 public class MockGameRepository implements GameRepository {
     @Override
-    public List<Game> obtainGamesByPage(int pageNumber) {
+    public GiantBombGameListResponse obtainGamesByPage(int pageNumber) {
         return null;
     }
 
     @Override
-    public Game obtainGameDetailsById(int gameId) {
+    public GiantBombSingleGameResponse obtainGameDetailsById(int gameId) {
         return null;
     }
 }
