@@ -1,14 +1,13 @@
 package com.github.jorgecastilloprz.easymvp;
 
-import com.github.jorgecastilloprz.easymvp.di.RepositoryModule;
 import com.github.jorgecastilloprz.easymvp.domain.repository.GameRepository;
-import com.github.jorgecastilloprz.easymvp.domain.repository.RestGameRepository;
-import com.github.jorgecastilloprz.easymvp.domain.restmodel.GiantBombGameListResponse;
-import com.github.jorgecastilloprz.easymvp.domain.restmodel.GiantBombSingleGameResponse;
+import com.github.jorgecastilloprz.easymvp.domain.repository.GiantBombRestGameRepository;
+import com.github.jorgecastilloprz.easymvp.domain.repository.mapper.GiantBombResponseMapper;
+import com.github.jorgecastilloprz.easymvp.mvp.model.Game;
 
 import junit.framework.TestCase;
 
-import dagger.ObjectGraph;
+import java.util.List;
 
 /**
  * Created by jorge on 18/01/15.
@@ -19,25 +18,20 @@ public class GiantBombRestGameRepositoryTest extends TestCase {
         
     public void testRunnerRestGameRepository() {
 
-        restGameRepository = new RestGameRepository("http://www.giantbomb.com/api");
-        ObjectGraph repositoryGraph = ObjectGraph.create(new RepositoryModule());
-        repositoryGraph.inject(restGameRepository);
+        restGameRepository = new GiantBombRestGameRepository(
+                "http://www.giantbomb.com/api",
+                "07dce392be760422f40d67bc7945d7f1aaac7f4e",
+                new GiantBombResponseMapper()
+        );
         
         assertNotNull(restGameRepository);
         testObtainGamesByPage();
     }
     
     public void testObtainGamesByPage() {
-        GiantBombGameListResponse gamesOnFirstPageResponse = restGameRepository.obtainGamesByPage(1);
-        assertEquals(10, (int) gamesOnFirstPageResponse.getNumberOfPageResults());
-
-        testObtainSingleGame();
-    }
-    
-    public void testObtainSingleGame() {
-        GiantBombSingleGameResponse singleGameResponse = restGameRepository.obtainGameDetailsById(1);
-        assertNotNull(singleGameResponse);
-        assertNotNull(singleGameResponse.getResult());
-        assertTrue(singleGameResponse.getResult().getId() > 0);
+        List<Game> gamesOnFirstPageResponse = restGameRepository.obtainGamesByPage(1);
+        assertNotNull(gamesOnFirstPageResponse);
+        assertEquals(10, gamesOnFirstPageResponse.size());
+        assertTrue(!gamesOnFirstPageResponse.get(0).getName().equals(""));
     }
 }

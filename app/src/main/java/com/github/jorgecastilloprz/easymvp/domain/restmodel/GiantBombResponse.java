@@ -20,6 +20,8 @@ public class GiantBombResponse {
     @SerializedName("number_of_total_results")
     @Expose
     private Integer numberOfTotalResults;
+    @Expose
+    private List<Result> results = new ArrayList<Result>();
     @SerializedName("status_code")
     @Expose
     private Integer statusCode;
@@ -96,6 +98,14 @@ public class GiantBombResponse {
         this.numberOfTotalResults = numberOfTotalResults;
     }
 
+    public List<Result> getResults() {
+        return results;
+    }
+
+    public void setResults(List<Result> results) {
+        this.results = results;
+    }
+    
     /**
      * @return The statusCode
      */
