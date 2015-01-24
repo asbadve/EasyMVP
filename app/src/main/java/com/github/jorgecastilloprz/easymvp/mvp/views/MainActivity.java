@@ -12,7 +12,6 @@ import com.github.jorgecastilloprz.easymvp.PlaceHolderFragment;
 import com.github.jorgecastilloprz.easymvp.R;
 import com.github.jorgecastilloprz.easymvp.ui.BaseActivity;
 
-import java.util.LinkedList;
 import java.util.List;
 
 
