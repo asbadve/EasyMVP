@@ -31,11 +31,11 @@ public class EasyMVPApplication extends Application {
     }
 
     /**
-     * Used to obtain a new graph with aditional modules from a concrete scope.
-     * Original graph does not get modified by this method
+     * Used to obtain a NEW graph with aditional modules from a concrete scope.
+     * Original graph does not get modified by plus method.
      *
      * @param modules to be added
-     * @return
+     * @return new graph
      */
     public ObjectGraph buildGraphWithAditionalModules(List<Object> modules) {
         if (modules == null) {

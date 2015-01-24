@@ -34,9 +34,7 @@ public class MainActivity extends BaseActivity implements NavigationDrawerFragme
 
     @Override
     protected List<Object> getModules() {
-        LinkedList<Object> modules = new LinkedList<Object>();
-//        modules.add(new TvShowUIModule());
-        return modules;
+        return null;
     }
 
     @Override
