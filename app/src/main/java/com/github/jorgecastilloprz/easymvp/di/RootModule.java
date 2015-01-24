@@ -4,7 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 
 import com.github.jorgecastilloprz.easymvp.EasyMVPApplication;
-import com.github.jorgecastilloprz.easymvp.mvp.views.MainActivity;
+import com.github.jorgecastilloprz.easymvp.ui.MainActivity;
 
 import dagger.Module;
 import dagger.Provides;

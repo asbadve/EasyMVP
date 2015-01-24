@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.github.jorgecastilloprz.easymvp.di.qualifiers.ActivityContext;
-import com.github.jorgecastilloprz.easymvp.mvp.views.DetailsActivity;
 
 import javax.inject.Inject;
 

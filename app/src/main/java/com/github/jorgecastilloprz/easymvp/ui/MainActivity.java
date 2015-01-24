@@ -1,19 +1,18 @@
-package com.github.jorgecastilloprz.easymvp.mvp.views;
+package com.github.jorgecastilloprz.easymvp.ui;
 
 import android.os.Bundle;
 
-import com.github.jorgecastilloprz.easymvp.ui.BaseActivity;
+import com.github.jorgecastilloprz.easymvp.R;
 
 import java.util.List;
 
-/**
- * Created by jorge on 17/01/15.
- */
-public class DetailsActivity extends BaseActivity {
+
+public class MainActivity extends BaseActivity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
     }
 
     @Override
