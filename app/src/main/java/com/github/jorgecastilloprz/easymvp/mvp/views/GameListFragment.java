@@ -58,11 +58,10 @@ public class GameListFragment extends BaseFragment implements GameStaggeredAdapt
         
         StaggeredGridLayoutManager staggeredGridLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         staggeredGridLayoutManager.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_MOVE_ITEMS_BETWEEN_SPANS);
-        
         gameRecyclerView.setLayoutManager(staggeredGridLayoutManager);
+        
         gameAdapter.setOnItemClickListener(this);
         gameRecyclerView.setAdapter(gameAdapter);
-        fabButton.attachToRecyclerView(gameRecyclerView);
     }
 
     private void setPresenterView() {
@@ -99,6 +98,7 @@ public class GameListFragment extends BaseFragment implements GameStaggeredAdapt
     public void drawGames(List<Game> games) {
         gameAdapter.setGameCollection(games);
         gameAdapter.notifyDataSetChanged();
+        fabButton.attachToRecyclerView(gameRecyclerView);
     }
 
     @Override

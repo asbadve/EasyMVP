@@ -16,7 +16,7 @@
         android:id="@+id/fab"
         android:layout_width="?attr/actionBarSize"
         android:layout_height="?attr/actionBarSize"
-        android:layout_gravity="bottom|end"
+        android:layout_gravity="bottom|right"
         android:layout_margin="16dp"
         android:src="@drawable/ic_settings_backup_restore_white"
         fab:fab_colorNormal="@color/fab_primary"

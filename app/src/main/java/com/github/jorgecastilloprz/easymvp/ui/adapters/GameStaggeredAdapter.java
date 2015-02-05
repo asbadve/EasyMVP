@@ -14,6 +14,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import javax.inject.Inject;
 
@@ -52,7 +53,8 @@ public class GameStaggeredAdapter extends RecyclerView.Adapter<GameStaggeredAdap
 
     @Override
     public int getItemViewType(int position) {
-        if (position % 3 == 0) {
+        Random typeRandom = new Random();
+        if (typeRandom.nextInt(3) % 3 == 0) {
             return VIEWTYPE_SHORT;
         } else {
             return VIEWTYPE_LONG;
