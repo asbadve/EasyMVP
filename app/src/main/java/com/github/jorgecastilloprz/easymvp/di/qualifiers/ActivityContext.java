@@ -7,7 +7,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
  * Dagger qualifier created to allow classes to inject Activity Context.
- * Created by jorge on 10/01/15.
+ * @author Jorge Castillo Pérez
  */
 @Qualifier
 @Retention(RUNTIME)

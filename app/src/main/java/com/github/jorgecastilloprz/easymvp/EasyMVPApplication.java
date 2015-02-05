@@ -2,7 +2,7 @@ package com.github.jorgecastilloprz.easymvp;
 
 import android.app.Application;
 
-import com.github.jorgecastilloprz.easymvp.di.RootModule;
+import com.github.jorgecastilloprz.easymvp.di.ApplicationModule;
 
 import java.util.List;
 
@@ -46,7 +46,7 @@ public class EasyMVPApplication extends Application {
     }
 
     private void initDependencyInjection() {
-        objectGraph = ObjectGraph.create(new RootModule(this));
+        objectGraph = ObjectGraph.create(new ApplicationModule(this));
         objectGraph.inject(this);
         objectGraph.injectStatics();
     }

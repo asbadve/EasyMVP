@@ -1,8 +1,8 @@
 package com.github.jorgecastilloprz.easymvp.di;
 
 import com.github.jorgecastilloprz.easymvp.executor.InteractorExecutor;
-import com.github.jorgecastilloprz.easymvp.executor.MainThreadExecutor;
-import com.github.jorgecastilloprz.easymvp.executor.MainThreadExecutorImpl;
+import com.github.jorgecastilloprz.easymvp.executor.MainThread;
+import com.github.jorgecastilloprz.easymvp.executor.MainThreadImpl;
 import com.github.jorgecastilloprz.easymvp.executor.ThreadExecutor;
 
 import javax.inject.Singleton;
@@ -15,7 +15,7 @@ import dagger.Provides;
  */
 @Module(library = true)
 public class ExecutorModule {
-    
+
     @Provides
     @Singleton
     InteractorExecutor provideExecutor(ThreadExecutor threadExecutor) {
@@ -24,7 +24,7 @@ public class ExecutorModule {
 
     @Provides
     @Singleton
-    MainThreadExecutor provideMainThread(MainThreadExecutorImpl mainThread) {
+    MainThread provideMainThread(MainThreadImpl mainThread) {
         return mainThread;
     }
 }

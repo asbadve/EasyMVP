@@ -6,17 +6,17 @@ import android.os.Looper;
 import javax.inject.Inject;
 
 /**
- * {@link com.github.jorgecastilloprz.easymvp.executor.MainThreadExecutor} implementation. Will make
+ * {@link MainThread} implementation. Will make
  * interactor Callbacks able to get executed in the Android UI thread*
  * * *
  * Created by jorge on 11/01/15.
  */
-public class MainThreadExecutorImpl implements MainThreadExecutor {
+public class MainThreadImpl implements MainThread {
 
     private Handler handler;
 
     @Inject
-    MainThreadExecutorImpl() {
+    MainThreadImpl() {
         this.handler = new Handler(Looper.getMainLooper());
     }
 

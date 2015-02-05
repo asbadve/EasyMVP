@@ -9,7 +9,17 @@
         android:id="@+id/gameListFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        class="com.github.jorgecastilloprz.easymvp.mvp.views.GameListFragment"
-        tools:context="com.github.pedrovgs.effectiveandroidui.ui.activity.MainActivity"/>
+        android:layout_marginTop="5dp"
+        class="com.github.jorgecastilloprz.easymvp.mvp.views.GameListFragment"/>
+
+    <android.support.v7.widget.Toolbar
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/myToolbar"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_width="match_parent"
+        android:background="?attr/colorPrimary"
+        android:elevation="4dp"
+        app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
     
 </FrameLayout>
