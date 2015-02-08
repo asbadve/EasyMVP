@@ -1,10 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:fab="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:material="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <com.pnikosis.materialishprogress.ProgressWheel
+        android:id="@+id/progress_wheel"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_gravity="center"
+        android:alpha="0"
+        material:matProg_barColor="@color/fab_ripple"
+        material:matProg_progressIndeterminate="true"/>
+    
     <android.support.v7.widget.RecyclerView
         android:id="@+id/gameRecyclerView"
         android:layout_width="match_parent"
@@ -19,8 +27,8 @@
         android:layout_gravity="bottom|right"
         android:layout_margin="16dp"
         android:src="@drawable/ic_settings_backup_restore_white"
-        fab:fab_colorNormal="@color/fab_primary"
-        fab:fab_colorPressed="@color/fab_primary_pressed"
-        fab:fab_colorRipple="@color/fab_ripple" />
+        material:fab_colorNormal="@color/fab_primary"
+        material:fab_colorPressed="@color/fab_primary_pressed"
+        material:fab_colorRipple="@color/fab_ripple" />
 
-</LinearLayout>
+</FrameLayout>

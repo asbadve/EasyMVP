@@ -1,28 +1,14 @@
 package com.github.jorgecastilloprz.easymvp.ui;
 
-import android.content.Context;
-import android.content.Intent;
+import android.view.View;
 
-import com.github.jorgecastilloprz.easymvp.di.qualifiers.ActivityContext;
-
-import javax.inject.Inject;
+import com.github.jorgecastilloprz.easymvp.mvp.model.Game;
 
 /**
- * Entity used to implement navigation between activities and fragments
- * * * 
- * Created by jorge on 17/01/15.
+ * Decouples Navigator low level implementations to/from low level presenter implementations
+ *
+ * @author Jorge Castillo Pérez
  */
-public class Navigator {
-    
-    private final Context activityContext;
-    
-    @Inject
-    public Navigator(@ActivityContext Context activityContext) {
-        this.activityContext = activityContext;
-    }
-    
-    public void openDetailsActivity() {
-        Intent detailsActivityIntent = new Intent(activityContext, DetailsActivity.class);
-        activityContext.startActivity(detailsActivityIntent);
-    }
+public interface Navigator {
+    void navigateToGameDetails(Game game, View viewToShare);
 }

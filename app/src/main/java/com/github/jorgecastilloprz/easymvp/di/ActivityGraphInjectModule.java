@@ -15,34 +15,22 @@
  */
 package com.github.jorgecastilloprz.easymvp.di;
 
-import com.github.jorgecastilloprz.easymvp.mvp.presenters.GameDetailsPresenter;
-import com.github.jorgecastilloprz.easymvp.mvp.presenters.GameDetailsPresenterImpl;
-import com.github.jorgecastilloprz.easymvp.mvp.presenters.GameListPresenter;
 import com.github.jorgecastilloprz.easymvp.mvp.presenters.GameListPresenterImpl;
 import com.github.jorgecastilloprz.easymvp.mvp.views.GameListFragment;
-
-import javax.inject.Singleton;
+import com.github.jorgecastilloprz.easymvp.mvp.views.DetailsActivity;
+import com.github.jorgecastilloprz.easymvp.ui.EasyMVPNavigator;
+import com.github.jorgecastilloprz.easymvp.ui.MainActivity;
 
 import dagger.Module;
-import dagger.Provides;
 
 /**
- * Satisfies presenter dependent classes with concrete presenter implementations
+ * Wraps every injectable declaration for activity scope graph to clean ActivityModule a little bit
  *
  * @author Jorge Castillo Pérez
  */
-
 @Module(
-        injects = {GameListFragment.class},
-        library = true, complete = false
+       injects = {MainActivity.class, DetailsActivity.class, GameListFragment.class, GameListPresenterImpl.class, EasyMVPNavigator.class},
+       complete = false
 )
-public class PresenterModule {
-
-    @Provides @Singleton GameListPresenter provideGameListPresenter(GameListPresenterImpl gameListPresenter) {
-        return gameListPresenter;
-    }
-    
-    @Provides @Singleton GameDetailsPresenter provideGameDetailsPresenter(GameDetailsPresenterImpl gameDetailsPresenter) {
-        return gameDetailsPresenter;
-    }
+public class ActivityGraphInjectModule {
 }

@@ -1,20 +1,43 @@
+/*
+ * Copyright (C) 2014 Jorge Castillo Pérez
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.github.jorgecastilloprz.easymvp.mvp.model;
+
+import org.parceler.Parcel;
 
 import java.util.ArrayList;
 
 /**
- * Application game model
- * Created by jorge on 18/01/15.
+ * Application game model. Attributes should not be private because of Parceller dependency (uses java
+ * reflection API).
+ * @author Jorge Castillo Pérez
  */
+@Parcel
 public class Game {
     
-    private String name;
-    private String image;
-    private String summary;
-    private String description;
-    private String releaseDate;
-    private ArrayList<String> platforms;
+    String name;
+    String image;
+    String summary;
+    String description;
+    String releaseDate;
+    ArrayList<String> platforms;
 
+    public Game() {
+        /*Required empty bean constructor*/
+    }
+    
     public Game(String name, String image, String summary, String description, String releaseDate, ArrayList<String> platforms) {
         this.name = name;
         this.image = image;

@@ -1,9 +1,25 @@
+/*
+ * Copyright (C) 2014 Jorge Castillo Pérez
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.github.jorgecastilloprz.easymvp.mvp.presenters;
 
 import com.github.jorgecastilloprz.easymvp.mvp.interactors.CheckConnectionInteractor;
 import com.github.jorgecastilloprz.easymvp.mvp.interactors.GetGamesByPageInteractor;
 import com.github.jorgecastilloprz.easymvp.mvp.model.Game;
 import com.github.jorgecastilloprz.easymvp.mvp.views.LoadingView;
+import com.github.jorgecastilloprz.easymvp.ui.EasyMVPNavigator;
 
 import java.util.List;
 
@@ -22,22 +38,26 @@ public class GameListPresenterImpl implements LifecycleCallbacks, GameListPresen
     
     private CheckConnectionInteractor checkConnectionInteractor;
     private GetGamesByPageInteractor getGamesByPageInteractor;
-    
-    @Inject GameListPresenterImpl(CheckConnectionInteractor checkConnectionInteractor, GetGamesByPageInteractor getGamesByPageInteractor) {
+    private EasyMVPNavigator navigator;
+
+    @Inject GameListPresenterImpl(CheckConnectionInteractor checkConnectionInteractor, GetGamesByPageInteractor getGamesByPageInteractor, EasyMVPNavigator navigator) {
         this.checkConnectionInteractor = checkConnectionInteractor;
         this.getGamesByPageInteractor = getGamesByPageInteractor;
+        this.navigator = navigator;
     }
 
     public void setView(View view) {
         if (view == null) {
             throw new IllegalArgumentException("View must not be null!");
         }
-        
+
         this.view = view;
     }
 
     @Override
     public void onStart() {
+        view.hideFloatingButton();
+        view.displayLoading();
         checkConnectionError();
     }
 
@@ -53,6 +73,7 @@ public class GameListPresenterImpl implements LifecycleCallbacks, GameListPresen
 
             @Override
             public void onConnectionError() {
+                view.hideLoading();
                 view.displayConnectionError();
             }
         });
@@ -63,19 +84,36 @@ public class GameListPresenterImpl implements LifecycleCallbacks, GameListPresen
      *
      * @param pageNumber to load
      */
-    private void getGamesForPage(int pageNumber) {
+    public void getGamesForPage(int pageNumber) {
         getGamesByPageInteractor.execute(pageNumber, new GetGamesByPageInteractor.Callback() {
 
             @Override
             public void onGamePageLoaded(List<Game> games) {
+                view.hideLoading();
                 view.drawGames(games);
+                view.displayFloatingButton();
             }
 
             @Override
             public void onGettingGamesError(String errorMessage) {
+                view.hideLoading();
                 view.displayGettingGamesError(errorMessage);
             }
         });
+    }
+
+    /**
+     * We call onStart to initialize game loading logic again
+     */
+    @Override
+    public void refreshGames() {
+        view.clearGames();
+        onStart();
+    }
+
+    @Override
+    public void onGameClick(Game game, android.view.View viewToShare) {
+        navigator.navigateToGameDetails(game, viewToShare);
     }
 
     @Override
@@ -88,22 +126,21 @@ public class GameListPresenterImpl implements LifecycleCallbacks, GameListPresen
         //Empty
     }
 
-    @Override
-    public void onGameClick() {
-        view.showGameDetails();
-    }
-
     /**
      * View used to decouple game list view implementation from model and vice versa
      */
     public interface View extends LoadingView {
 
+        void displayFloatingButton();
+
+        void hideFloatingButton();
+        
         void drawGames(List<Game> games);
+        
+        void clearGames();
         
         void displayConnectionError();
         
         void displayGettingGamesError(String errorMessage);
-        
-        void showGameDetails();
     }
 }

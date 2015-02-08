@@ -1,3 +1,18 @@
+/*
+ * Copyright (C) 2014 Jorge Castillo Pérez
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.github.jorgecastilloprz.easymvp.ui.adapters;
 
 import android.os.Handler;
@@ -6,7 +21,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.github.jorgecastilloprz.easymvp.R;
 import com.github.jorgecastilloprz.easymvp.mvp.model.Game;
@@ -14,7 +28,6 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import javax.inject.Inject;
 
@@ -22,15 +35,16 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 
 /**
- * Created by jorge on 2/02/15.
+ * @author Jorge Castillo Pérez
  */
 public class GameStaggeredAdapter extends RecyclerView.Adapter<GameStaggeredAdapter.ViewHolder> implements View.OnClickListener {
 
     private List<Game> gameCollection;
     private OnItemClickListener onItemClickListener;
 
-    private static final int VIEWTYPE_LONG = 1;
-    private static final int VIEWTYPE_SHORT = 2;
+    private static final int VIEWTYPE_SHORT = 0;
+    private static final int VIEWTYPE_MEDIUM = 1;
+    private static final int VIEWTYPE_LONG = 2;
 
     /**
      * Injectable constructor allows adapter injection
@@ -40,11 +54,16 @@ public class GameStaggeredAdapter extends RecyclerView.Adapter<GameStaggeredAdap
     }
 
     /**
-     * Used to set the game collection after adapter injection
-     * @param collectionToSet
+     * Used to add games to collection. This method is called after initial adapter injection and 
+     * everytime the presenter asks the view to append new games
+     * @param collectionToAdd
      */
-    public void setGameCollection(List<Game> collectionToSet) {
-        this.gameCollection = collectionToSet;
+    public void addGamesToCollection(List<Game> collectionToAdd) {
+        gameCollection.addAll(collectionToAdd);
+    }
+    
+    public void clearGames() {
+        gameCollection.clear();
     }
 
     public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
@@ -53,12 +72,7 @@ public class GameStaggeredAdapter extends RecyclerView.Adapter<GameStaggeredAdap
 
     @Override
     public int getItemViewType(int position) {
-        Random typeRandom = new Random();
-        if (typeRandom.nextInt(3) % 3 == 0) {
-            return VIEWTYPE_SHORT;
-        } else {
-            return VIEWTYPE_LONG;
-        }
+        return position % 3;
     }
 
     @Override
@@ -66,6 +80,8 @@ public class GameStaggeredAdapter extends RecyclerView.Adapter<GameStaggeredAdap
         View v;
         if (VIEWTYPE_LONG == viewType) {
             v = LayoutInflater.from(parent.getContext()).inflate(R.layout.game_grid_item_long, parent, false);
+        } else if (VIEWTYPE_MEDIUM == viewType) {
+            v = LayoutInflater.from(parent.getContext()).inflate(R.layout.game_grid_item_medium, parent, false);
         } else {
             v = LayoutInflater.from(parent.getContext()).inflate(R.layout.game_grid_item, parent, false);
         }
@@ -76,7 +92,6 @@ public class GameStaggeredAdapter extends RecyclerView.Adapter<GameStaggeredAdap
     @Override public void onBindViewHolder(GameStaggeredAdapter.ViewHolder holder, int position) {
         Game gameItem = gameCollection.get(position);
         holder.gameImage.setImageBitmap(null);
-        holder.gameItemName.setText(gameItem.getName());
         Picasso.with(holder.gameImage.getContext()).load(gameItem.getImage()).into(holder.gameImage);
         holder.itemView.setTag(gameItem);
     }
@@ -104,8 +119,6 @@ public class GameStaggeredAdapter extends RecyclerView.Adapter<GameStaggeredAdap
 
         @InjectView(R.id.gameItemImage)
         ImageView gameImage;
-        @InjectView(R.id.gameItemName)
-        TextView gameItemName;
 
         public ViewHolder(View itemView) {
             super(itemView);
