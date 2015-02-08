@@ -35,6 +35,7 @@ import javax.inject.Singleton;
 public class GameListPresenterImpl implements LifecycleCallbacks, GameListPresenter {
     
     private View view;
+    private int lastPageLoaded;
     
     private CheckConnectionInteractor checkConnectionInteractor;
     private GetGamesByPageInteractor getGamesByPageInteractor;
@@ -44,8 +45,10 @@ public class GameListPresenterImpl implements LifecycleCallbacks, GameListPresen
         this.checkConnectionInteractor = checkConnectionInteractor;
         this.getGamesByPageInteractor = getGamesByPageInteractor;
         this.navigator = navigator;
+        this.lastPageLoaded = 1;
     }
 
+    @Override
     public void setView(View view) {
         if (view == null) {
             throw new IllegalArgumentException("View must not be null!");
@@ -53,28 +56,29 @@ public class GameListPresenterImpl implements LifecycleCallbacks, GameListPresen
 
         this.view = view;
     }
-
+    
     @Override
     public void onStart() {
         view.hideFloatingButton();
         view.displayLoading();
-        checkConnectionError();
+        initGameSearch();
     }
 
     /**
      * Dispatchs CheckConnection interactor logic and declares callback for reacting to results
      */
-    private void checkConnectionError() {
+    private void initGameSearch() {
         checkConnectionInteractor.execute(new CheckConnectionInteractor.Callback() {
             @Override
             public void onConnectionAvaiable() {
-                getGamesForPage(1);
+                getGamesForPage(lastPageLoaded++);
             }
 
             @Override
             public void onConnectionError() {
                 view.hideLoading();
                 view.displayConnectionError();
+                lastPageLoaded--;
             }
         });
     }
@@ -84,13 +88,14 @@ public class GameListPresenterImpl implements LifecycleCallbacks, GameListPresen
      *
      * @param pageNumber to load
      */
-    public void getGamesForPage(int pageNumber) {
+    public void getGamesForPage(final int pageNumber) {
         getGamesByPageInteractor.execute(pageNumber, new GetGamesByPageInteractor.Callback() {
 
             @Override
             public void onGamePageLoaded(List<Game> games) {
                 view.hideLoading();
                 view.drawGames(games);
+                view.attachLastGameScrollListener();
                 view.displayFloatingButton();
             }
 
@@ -98,6 +103,7 @@ public class GameListPresenterImpl implements LifecycleCallbacks, GameListPresen
             public void onGettingGamesError(String errorMessage) {
                 view.hideLoading();
                 view.displayGettingGamesError(errorMessage);
+                lastPageLoaded--;
             }
         });
     }
@@ -109,6 +115,11 @@ public class GameListPresenterImpl implements LifecycleCallbacks, GameListPresen
     public void refreshGames() {
         view.clearGames();
         onStart();
+    }
+
+    @Override
+    public void onLastGameViewed() {
+        initGameSearch();
     }
 
     @Override
@@ -142,5 +153,9 @@ public class GameListPresenterImpl implements LifecycleCallbacks, GameListPresen
         void displayConnectionError();
         
         void displayGettingGamesError(String errorMessage);
+
+        void attachLastGameScrollListener();
+        
+        void disableLastGameScrollListener();
     }
 }

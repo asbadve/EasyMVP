@@ -22,11 +22,13 @@ import java.util.ArrayList;
 /**
  * Application game model. Attributes should not be private because of Parceller dependency (uses java
  * reflection API).
+ *
  * @author Jorge Castillo Pérez
  */
 @Parcel
 public class Game {
-    
+
+    int id;
     String name;
     String image;
     String summary;
@@ -37,14 +39,23 @@ public class Game {
     public Game() {
         /*Required empty bean constructor*/
     }
-    
-    public Game(String name, String image, String summary, String description, String releaseDate, ArrayList<String> platforms) {
+
+    public Game(int id, String name, String image, String summary, String description, String releaseDate, ArrayList<String> platforms) {
+        this.id = id;
         this.name = name;
         this.image = image;
         this.summary = summary;
         this.description = description;
         this.releaseDate = releaseDate;
         this.platforms = platforms;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getName() {

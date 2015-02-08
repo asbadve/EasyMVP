@@ -15,7 +15,13 @@
  */
 package com.github.jorgecastilloprz.easymvp.mvp.presenters;
 
+import android.graphics.Bitmap;
+import android.os.Build;
+
+import com.github.jorgecastilloprz.easymvp.mvp.interactors.GenerateInterfaceColorsInteractor;
+import com.github.jorgecastilloprz.easymvp.mvp.interactors.MarkGameAsFavouriteInteractor;
 import com.github.jorgecastilloprz.easymvp.mvp.model.Game;
+import com.github.jorgecastilloprz.easymvp.mvp.model.InterfaceColors;
 
 import javax.inject.Inject;
 
@@ -26,9 +32,16 @@ public class GameDetailsPresenterImpl implements LifecycleCallbacks, GameDetails
 
     private View view;
     private Game gameModel;
-   
+    private GenerateInterfaceColorsInteractor generateInterfaceColorsInteractor;
+    private MarkGameAsFavouriteInteractor markGameAsFavouriteInteractor;
+
     @Inject
-    public GameDetailsPresenterImpl() {}
+    public GameDetailsPresenterImpl(GenerateInterfaceColorsInteractor generateInterfaceColorsInteractor, 
+                                    MarkGameAsFavouriteInteractor markGameAsFavouriteInteractor) {
+        
+        this.generateInterfaceColorsInteractor = generateInterfaceColorsInteractor;
+        this.markGameAsFavouriteInteractor = markGameAsFavouriteInteractor;
+    }
     
     public void setView(View view) {
         if (view == null) {
@@ -43,31 +56,84 @@ public class GameDetailsPresenterImpl implements LifecycleCallbacks, GameDetails
         }
         this.gameModel = gameModel;
     }
-    
+
     @Override
     public void onStart() {
         view.loadBackgroundImage(gameModel.getImage());
+        view.setTitle(gameModel.getName());
+        view.setDescription(gameModel.getDescription());
+    }
+
+    @Override
+    public void onBackgroundLoaded(Bitmap backgroundBitmap) {
+        generateInterfaceColorsInteractor.execute(backgroundBitmap, new GenerateInterfaceColorsInteractor.Callback() {
+            @Override
+            public void onColorsGenerated(InterfaceColors interfaceColors) {
+                view.setToolbarColor(interfaceColors.getToolbarColor());
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    view.setStatusBarColor(interfaceColors.getStatusBarColor());
+                }
+                
+                view.setFloatingButtonNormalColor(interfaceColors.getFabNormalColor());
+                view.setFloatingButtonPressedColor(interfaceColors.getFabPressedColor());
+                view.setFloatingButtonRippleColor(interfaceColors.getFabRippleColor());
+            }
+        });
+    }
+
+    @Override
+    public void onFavouriteButtonClicked() {
+        markGameAsFavouriteInteractor.execute(gameModel.getId(), new MarkGameAsFavouriteInteractor.Callback() {
+            @Override
+            public void onFavouriteSuccess() {
+                view.markGameAsFavourite();
+            }
+
+            @Override
+            public void onMarkAsFavouriteError(String errorMessage) {
+                view.displayMarkAsFavouriteError(errorMessage);
+            }
+        });
+    }
+
+    @Override
+    public void onUpButtonClick() {
+        view.getBackToMainScreen();
     }
 
     @Override
     public void onResume() {
-
+        /*Empty*/
     }
 
     @Override
     public void onPause() {
-
-    }
-
-    @Override
-    public void onBackgroundLoaded() {
-        view.setInterfaceColors();
+        /*Empty*/
     }
 
     public interface View {
         
+        void getBackToMainScreen();
+        
         void loadBackgroundImage(String imageUrl);
         
-        void setInterfaceColors();
+        void setToolbarColor(int color);
+        
+        void setStatusBarColor(int color);
+        
+        void setFloatingButtonNormalColor(int color);
+        
+        void setFloatingButtonPressedColor(int color);
+
+        void setFloatingButtonRippleColor(int color);
+        
+        void setTitle(String title);
+        
+        void setDescription(String description);
+        
+        void markGameAsFavourite();
+        
+        void displayMarkAsFavouriteError(String errorMessage);
     }
 }

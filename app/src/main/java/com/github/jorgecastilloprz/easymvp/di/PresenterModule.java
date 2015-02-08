@@ -19,6 +19,7 @@ import com.github.jorgecastilloprz.easymvp.mvp.presenters.GameDetailsPresenter;
 import com.github.jorgecastilloprz.easymvp.mvp.presenters.GameDetailsPresenterImpl;
 import com.github.jorgecastilloprz.easymvp.mvp.presenters.GameListPresenter;
 import com.github.jorgecastilloprz.easymvp.mvp.presenters.GameListPresenterImpl;
+import com.github.jorgecastilloprz.easymvp.mvp.views.DetailsActivity;
 import com.github.jorgecastilloprz.easymvp.mvp.views.GameListFragment;
 
 import javax.inject.Singleton;
@@ -33,7 +34,7 @@ import dagger.Provides;
  */
 
 @Module(
-        injects = {GameListFragment.class},
+        injects = {GameListFragment.class, DetailsActivity.class},
         library = true, complete = false
 )
 public class PresenterModule {

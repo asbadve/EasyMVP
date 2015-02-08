@@ -15,23 +15,23 @@
  */
 package com.github.jorgecastilloprz.easymvp.mvp.views;
 
-import android.graphics.Bitmap;
+import android.annotation.TargetApi;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Parcelable;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.ViewCompat;
-import android.support.v7.graphics.Palette;
 import android.support.v7.widget.Toolbar;
 import android.transition.Slide;
-import android.view.Window;
+import android.view.MenuItem;
 import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.github.jorgecastilloprz.easymvp.R;
 import com.github.jorgecastilloprz.easymvp.mvp.model.Game;
 import com.github.jorgecastilloprz.easymvp.mvp.presenters.GameDetailsPresenterImpl;
 import com.github.jorgecastilloprz.easymvp.ui.BaseActivity;
+import com.melnykov.fab.FloatingActionButton;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
@@ -41,11 +41,11 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnClick;
 
 /**
- * Delegates all its presentation logic into the GameDetailsPresenter. Game model needs to be passed 
+ * Delegates all its presentation logic into the GameDetailsPresenter. Game model needs to be passed
  * to it at the beginning.
  *
  * @author Jorge Castillo Pérez
@@ -55,12 +55,19 @@ public class DetailsActivity extends BaseActivity implements GameDetailsPresente
     public static final String GAME_EXTRA = "com.github.jorgecastilloprz.easymvp.gameExtra";
     public static final String SHARED_IMAGE_EXTRA = "sharedImage";
 
-    @Inject GameDetailsPresenterImpl gameDetailsPresenter;
-    
+    @Inject
+    GameDetailsPresenterImpl gameDetailsPresenter;
+
     @InjectView(R.id.detailsToolbar)
     Toolbar toolbar;
     @InjectView(R.id.backgroundImage)
     ImageView bgImage;
+    @InjectView(R.id.detailsFab)
+    FloatingActionButton detailsFab;
+    @InjectView(R.id.title)
+    TextView titleText;
+    @InjectView(R.id.description)
+    TextView descriptionText;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -72,11 +79,26 @@ public class DetailsActivity extends BaseActivity implements GameDetailsPresente
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         excludeItemsFromTransitionIfLollipop();
         setImageTransition();
-        
+
         Game game = Parcels.unwrap(getIntent().getExtras().getParcelable(GAME_EXTRA));
 
         setPresenterView();
         setPresenterGameModel(game);
+    }
+
+    private void excludeItemsFromTransitionIfLollipop() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Slide transition = new Slide();
+            transition.excludeTarget(android.R.id.statusBarBackground, true);
+            transition.excludeTarget(R.id.detailsToolbar, true);
+            getWindow().setEnterTransition(transition);
+            getWindow().setReturnTransition(transition);
+        }
+    }
+
+    private void setImageTransition() {
+        final ImageView image = (ImageView) findViewById(R.id.backgroundImage);
+        ViewCompat.setTransitionName(image, SHARED_IMAGE_EXTRA);
     }
 
     private void setPresenterView() {
@@ -86,7 +108,22 @@ public class DetailsActivity extends BaseActivity implements GameDetailsPresente
     private void setPresenterGameModel(Game game) {
         gameDetailsPresenter.setGameModel(game);
     }
-    
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                gameDetailsPresenter.onUpButtonClick();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @OnClick(R.id.detailsFab)
+    public void onFavouriteButtonClick() {
+        gameDetailsPresenter.onFavouriteButtonClicked();
+    }
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -105,65 +142,78 @@ public class DetailsActivity extends BaseActivity implements GameDetailsPresente
         gameDetailsPresenter.onPause();
     }
 
-    private void excludeItemsFromTransitionIfLollipop() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Slide transition = new Slide();
-            transition.excludeTarget(android.R.id.statusBarBackground, true);
-            transition.excludeTarget(R.id.detailsToolbar, true);
-            getWindow().setEnterTransition(transition);
-            getWindow().setReturnTransition(transition);
-        }
+    @Override
+    public void getBackToMainScreen() {
+        onBackPressed();
     }
 
-    private void setImageTransition() {
-        final ImageView image = (ImageView) findViewById(R.id.backgroundImage);
-        ViewCompat.setTransitionName(image, SHARED_IMAGE_EXTRA);
-    }
-
-    /**
-     * Load bg image and notify presenter to react
-     * @param imageUrl
-     */
     @Override
     public void loadBackgroundImage(String imageUrl) {
         Picasso.with(this).load(imageUrl).into(bgImage, new Callback() {
-            @Override public void onSuccess() {
-                gameDetailsPresenter.onBackgroundLoaded();
+            @Override
+            public void onSuccess() {
+                gameDetailsPresenter.onBackgroundLoaded(((BitmapDrawable) bgImage.getDrawable()).getBitmap());
             }
 
-            @Override public void onError() {}
+            @Override
+            public void onError() {
+            }
         });
     }
 
     @Override
-    public void setInterfaceColors() {
-        Bitmap bitmap = ((BitmapDrawable) bgImage.getDrawable()).getBitmap();
-        Palette.generateAsync(bitmap, new Palette.PaletteAsyncListener() {
-            public void onGenerated(Palette palette) {
-                setInterfaceColors(palette);
-            }
-        });
+    public void setToolbarColor(int color) {
+        toolbar.setBackgroundColor(color);
     }
 
     /**
-     * We use palette to calculate the color palette to be used in main interface widgets (status
-     * bar, toolbar). Default app colors are passed to palette methods for cases when it is not
-     * capable of generating the colors because of low contrast on image.
-     * @param palette
+     * @param color
+     * @TargetApi annotation added to allow IDE compilation. The presenter will control the Build.VERSION.SDK_INT and
+     * will take the decision about dispatching or not this method.
      */
-    private void setInterfaceColors(Palette palette) {
-        int primaryDark = getResources().getColor(R.color.fab_primary_pressed);
-        int primary = getResources().getColor(R.color.fab_primary);
-        toolbar.setBackgroundColor(palette.getMutedColor(primary));
-        setStatusBarcolorIfLollipop(getWindow(), palette.getDarkMutedColor(primaryDark));
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    @Override
+    public void setStatusBarColor(int color) {
+        getWindow().setStatusBarColor(color);
     }
 
-    private void setStatusBarcolorIfLollipop(Window window, int color) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            window.setStatusBarColor(color);
-        }
+    @Override
+    public void setFloatingButtonNormalColor(int color) {
+        detailsFab.setColorNormal(color);
     }
-    
+
+    @Override
+    public void setFloatingButtonPressedColor(int color) {
+        detailsFab.setColorPressed(color);
+    }
+
+    @Override
+    public void setFloatingButtonRippleColor(int color) {
+        detailsFab.setColorRipple(color);
+    }
+
+
+    @Override
+    public void setTitle(String title) {
+        titleText.setText(title);
+    }
+
+    @Override
+    public void setDescription(String description) {
+        descriptionText.setText(description);
+    }
+
+    @Override
+    public void markGameAsFavourite() {
+        detailsFab.setImageResource(R.drawable.ic_fav_white);
+        Toast.makeText(this, R.string.game_fav, Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void displayMarkAsFavouriteError(String errorMessage) {
+        Toast.makeText(this, errorMessage, Toast.LENGTH_LONG).show();
+    }
+
     @Override
     protected List<Object> getModules() {
         return null;

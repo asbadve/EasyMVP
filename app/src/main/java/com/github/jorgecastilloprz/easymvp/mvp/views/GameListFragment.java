@@ -19,6 +19,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,7 +49,8 @@ import butterknife.OnClick;
  *
  * Created by jorge on 24/01/15.
  */
-public class GameListFragment extends BaseFragment implements GameStaggeredAdapter.OnItemClickListener, GameListPresenterImpl.View {
+public class GameListFragment extends BaseFragment implements GameStaggeredAdapter.OnItemClickListener,
+        GameListPresenterImpl.View {
 
     @Inject GameListPresenterImpl gameListPresenter;
     @Inject GameStaggeredAdapter gameAdapter;
@@ -56,6 +58,8 @@ public class GameListFragment extends BaseFragment implements GameStaggeredAdapt
     @InjectView(R.id.progress_wheel) ProgressWheel progressWheel;
     @InjectView(R.id.gameRecyclerView) RecyclerView gameRecyclerView;
     @InjectView(R.id.fab) FloatingActionButton fabButton;
+    
+    private StaggeredGridLayoutManager layoutManager;
     
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -73,10 +77,10 @@ public class GameListFragment extends BaseFragment implements GameStaggeredAdapt
     }
     
     private void initGameRecyclerView() {
-        
-        StaggeredGridLayoutManager staggeredGridLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
-        staggeredGridLayoutManager.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_MOVE_ITEMS_BETWEEN_SPANS);
-        gameRecyclerView.setLayoutManager(staggeredGridLayoutManager);
+
+        layoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
+        layoutManager.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_MOVE_ITEMS_BETWEEN_SPANS);
+        gameRecyclerView.setLayoutManager(layoutManager);
         
         gameAdapter.setOnItemClickListener(this);
         gameRecyclerView.setAdapter(gameAdapter);
@@ -147,6 +151,16 @@ public class GameListFragment extends BaseFragment implements GameStaggeredAdapt
     }
 
     @Override
+    public void attachLastGameScrollListener() {
+        gameRecyclerView.setOnScrollListener(new FinishScrollListener());
+    }
+
+    @Override
+    public void disableLastGameScrollListener() {
+        gameRecyclerView.setOnScrollListener(null);
+    }
+
+    @Override
     public void displayLoading() {
         ValueAnimator progressFadeInAnim = ObjectAnimator.ofFloat(progressWheel, "alpha", 0, 1, 1);
         progressFadeInAnim.start();
@@ -156,5 +170,20 @@ public class GameListFragment extends BaseFragment implements GameStaggeredAdapt
     public void hideLoading() {
         ValueAnimator progressFadeInAnim = ObjectAnimator.ofFloat(progressWheel, "alpha", 1, 0, 0);
         progressFadeInAnim.start();
+    }
+
+    private class FinishScrollListener extends RecyclerView.OnScrollListener {
+        @Override
+        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+
+            int[] itemPositions = new int[2];
+            layoutManager.findLastVisibleItemPositions(itemPositions);
+
+            int lastVisibleItemPosition = (itemPositions[1] != 0) ? ++itemPositions[1] : ++itemPositions[0];
+            
+            if (lastVisibleItemPosition >= gameAdapter.getItemCount()) {
+                gameListPresenter.onLastGameViewed();
+            }
+        }
     }
 }

@@ -26,7 +26,14 @@ import com.github.jorgecastilloprz.easymvp.mvp.model.Game;
  * @author Jorge Castillo Pérez
  */
 public interface GameListPresenter {
+    
+    void setView(GameListPresenterImpl.View view);
+    
     void onGameClick(Game game, View viewToShare);
+    
     void getGamesForPage(int pageNumber);
+    
     void refreshGames();
+    
+    void onLastGameViewed();
 }

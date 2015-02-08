@@ -15,9 +15,22 @@
  */
 package com.github.jorgecastilloprz.easymvp.mvp.presenters;
 
+import android.graphics.Bitmap;
+
+import com.github.jorgecastilloprz.easymvp.mvp.model.Game;
+
 /**
  * @author Jorge Castillo Pérez
  */
 public interface GameDetailsPresenter {
-    void onBackgroundLoaded();
+    
+    void setView(GameDetailsPresenterImpl.View view);
+    
+    void setGameModel(Game game);
+    
+    void onUpButtonClick();
+    
+    void onFavouriteButtonClicked();
+    
+    void onBackgroundLoaded(Bitmap backgroundBitmap);
 }

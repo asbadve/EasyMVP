@@ -15,6 +15,7 @@
  */
 package com.github.jorgecastilloprz.easymvp.domain.repository.mapper;
 
+import android.text.Html;
 import android.util.Log;
 
 import com.github.jorgecastilloprz.easymvp.domain.restmodel.Image;
@@ -57,11 +58,11 @@ public class GiantBombResponseMapper implements ApiResponseMapper<Result> {
             platForms.add(platform.getName());
         }
 
-        Game game = new Game(
+        Game game = new Game(gameResult.getId(),
                 gameResult.getName(),
                 getGameImageUrl(gameResult),
-                getGameDeck(gameResult),
-                getGameDescription(gameResult),
+                Html.fromHtml(getGameDeck(gameResult)).toString(),
+                Html.fromHtml(getGameDescription(gameResult)).toString(),
                 gameResult.getOriginalReleaseDate(),
                 platForms
         );
