@@ -33,4 +33,6 @@ public interface GameDetailsPresenter {
     void onFavouriteButtonClicked();
     
     void onBackgroundLoaded(Bitmap backgroundBitmap);
+    
+    void updateViewWithSafeGameDetails(Game game);
 }

@@ -19,6 +19,8 @@ import android.view.View;
 
 import com.github.jorgecastilloprz.easymvp.mvp.model.Game;
 
+import java.util.List;
+
 /**
  * Defined to abstract GameList view implementation to/from different possible
  * GameListPresenter implementations. 
@@ -36,4 +38,6 @@ public interface GameListPresenter {
     void refreshGames();
     
     void onLastGameViewed();
+    
+    void updateViewWithSafeGames(List<Game> safeGames);
 }

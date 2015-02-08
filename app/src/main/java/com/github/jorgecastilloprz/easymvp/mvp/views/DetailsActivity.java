@@ -19,6 +19,8 @@ import android.annotation.TargetApi;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Parcelable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.Toolbar;
 import android.transition.Slide;
@@ -54,6 +56,7 @@ public class DetailsActivity extends BaseActivity implements GameDetailsPresente
 
     public static final String GAME_EXTRA = "com.github.jorgecastilloprz.easymvp.gameExtra";
     public static final String SHARED_IMAGE_EXTRA = "sharedImage";
+    private static final String EXTRA_GAME_DETAILS_LOADED = "com.github.jorgecastilloprz.easymvp.gamedetailsloaded";
 
     @Inject
     GameDetailsPresenterImpl gameDetailsPresenter;
@@ -76,6 +79,7 @@ public class DetailsActivity extends BaseActivity implements GameDetailsPresente
         super.onCreate(savedInstanceState);
 
         setSupportActionBar(toolbar);
+        getSupportActionBar().hide();
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         excludeItemsFromTransitionIfLollipop();
         setImageTransition();
@@ -110,6 +114,26 @@ public class DetailsActivity extends BaseActivity implements GameDetailsPresente
     }
 
     @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        Game currentGameDetails = gameDetailsPresenter.getGameModel();
+
+        Parcelable currentGameParcel = Parcels.wrap(currentGameDetails);
+        outState.putParcelable(EXTRA_GAME_DETAILS_LOADED, currentGameParcel);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+
+        if (savedInstanceState != null) {
+            Parcelable safeGameDetailsParcel = savedInstanceState.getParcelable(EXTRA_GAME_DETAILS_LOADED);
+            Game safeGameDetails = Parcels.unwrap(safeGameDetailsParcel);
+            gameDetailsPresenter.updateViewWithSafeGameDetails(safeGameDetails);
+        }
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
@@ -140,6 +164,11 @@ public class DetailsActivity extends BaseActivity implements GameDetailsPresente
     protected void onPause() {
         super.onPause();
         gameDetailsPresenter.onPause();
+    }
+
+    @Override
+    public void showAnimatedToolbar() {
+        getSupportActionBar().show();
     }
 
     @Override

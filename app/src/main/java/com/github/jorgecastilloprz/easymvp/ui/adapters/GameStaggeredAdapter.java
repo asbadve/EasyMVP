@@ -65,6 +65,10 @@ public class GameStaggeredAdapter extends RecyclerView.Adapter<GameStaggeredAdap
     public void clearGames() {
         gameCollection.clear();
     }
+    
+    public List<Game> getCurrentGames() {
+        return gameCollection;
+    }
 
     public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
         this.onItemClickListener = onItemClickListener;

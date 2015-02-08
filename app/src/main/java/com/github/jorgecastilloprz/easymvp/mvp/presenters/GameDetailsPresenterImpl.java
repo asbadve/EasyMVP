@@ -56,12 +56,17 @@ public class GameDetailsPresenterImpl implements LifecycleCallbacks, GameDetails
         }
         this.gameModel = gameModel;
     }
+    
+    public Game getGameModel() {
+        return gameModel;
+    }
 
     @Override
     public void onStart() {
         view.loadBackgroundImage(gameModel.getImage());
         view.setTitle(gameModel.getName());
         view.setDescription(gameModel.getDescription());
+        view.showAnimatedToolbar();
     }
 
     @Override
@@ -80,6 +85,12 @@ public class GameDetailsPresenterImpl implements LifecycleCallbacks, GameDetails
                 view.setFloatingButtonRippleColor(interfaceColors.getFabRippleColor());
             }
         });
+    }
+
+    @Override
+    public void updateViewWithSafeGameDetails(Game game) {
+        gameModel = game;
+        onStart();
     }
 
     @Override
@@ -113,6 +124,8 @@ public class GameDetailsPresenterImpl implements LifecycleCallbacks, GameDetails
     }
 
     public interface View {
+        
+        void showAnimatedToolbar();
         
         void getBackToMainScreen();
         

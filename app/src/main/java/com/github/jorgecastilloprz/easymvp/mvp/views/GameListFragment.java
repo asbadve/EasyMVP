@@ -16,6 +16,7 @@
 package com.github.jorgecastilloprz.easymvp.mvp.views;
 
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
@@ -35,6 +36,8 @@ import com.nineoldandroids.animation.ObjectAnimator;
 import com.nineoldandroids.animation.ValueAnimator;
 import com.pnikosis.materialishprogress.ProgressWheel;
 
+import org.parceler.Parcels;
+
 import java.util.List;
 
 import javax.inject.Inject;
@@ -51,6 +54,8 @@ import butterknife.OnClick;
  */
 public class GameListFragment extends BaseFragment implements GameStaggeredAdapter.OnItemClickListener,
         GameListPresenterImpl.View {
+    
+    private static final String EXTRA_CURRENT_GAMES_LOADED = "com.github.jorgecastilloprz.easymvp.currentgamesloaded";
 
     @Inject GameListPresenterImpl gameListPresenter;
     @Inject GameStaggeredAdapter gameAdapter;
@@ -84,6 +89,7 @@ public class GameListFragment extends BaseFragment implements GameStaggeredAdapt
         
         gameAdapter.setOnItemClickListener(this);
         gameRecyclerView.setAdapter(gameAdapter);
+        gameRecyclerView.setHasFixedSize(true);
     }
     
     private void initFab() {
@@ -93,6 +99,34 @@ public class GameListFragment extends BaseFragment implements GameStaggeredAdapt
 
     private void setPresenterView() {
         gameListPresenter.setView(this);
+    }
+
+    /**
+     * Saving current games loaded to restore them if the view lifecycle is restarted
+     * @param outState with current games loaded parcel
+     */
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        List<Game> currentGames = gameAdapter.getCurrentGames();
+
+        Parcelable currentGamesParcel = Parcels.wrap(currentGames);
+        outState.putParcelable(EXTRA_CURRENT_GAMES_LOADED, currentGamesParcel);
+    }
+
+    /**
+     * Trying to restore games stored when lifecycle got stopped
+     * @param savedInstanceState
+     */
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+
+        if (savedInstanceState != null) {
+            Parcelable safeGamesLoadedParcel = savedInstanceState.getParcelable(EXTRA_CURRENT_GAMES_LOADED);
+            List<Game> safeGamesLoaded = Parcels.unwrap(safeGamesLoadedParcel);
+            gameListPresenter.updateViewWithSafeGames(safeGamesLoaded);
+        }
     }
 
     @Override

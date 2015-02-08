@@ -45,7 +45,7 @@ public class GameListPresenterImpl implements LifecycleCallbacks, GameListPresen
         this.checkConnectionInteractor = checkConnectionInteractor;
         this.getGamesByPageInteractor = getGamesByPageInteractor;
         this.navigator = navigator;
-        this.lastPageLoaded = 1;
+        this.lastPageLoaded = 0;
     }
 
     @Override
@@ -71,14 +71,13 @@ public class GameListPresenterImpl implements LifecycleCallbacks, GameListPresen
         checkConnectionInteractor.execute(new CheckConnectionInteractor.Callback() {
             @Override
             public void onConnectionAvaiable() {
-                getGamesForPage(lastPageLoaded++);
+                getGamesForPage(lastPageLoaded+1);
             }
 
             @Override
             public void onConnectionError() {
                 view.hideLoading();
                 view.displayConnectionError();
-                lastPageLoaded--;
             }
         });
     }
@@ -97,13 +96,13 @@ public class GameListPresenterImpl implements LifecycleCallbacks, GameListPresen
                 view.drawGames(games);
                 view.attachLastGameScrollListener();
                 view.displayFloatingButton();
+                lastPageLoaded++;
             }
 
             @Override
             public void onGettingGamesError(String errorMessage) {
                 view.hideLoading();
                 view.displayGettingGamesError(errorMessage);
-                lastPageLoaded--;
             }
         });
     }
@@ -114,12 +113,18 @@ public class GameListPresenterImpl implements LifecycleCallbacks, GameListPresen
     @Override
     public void refreshGames() {
         view.clearGames();
+        lastPageLoaded = 0;
         onStart();
     }
 
     @Override
     public void onLastGameViewed() {
         initGameSearch();
+    }
+
+    @Override
+    public void updateViewWithSafeGames(List<Game> safeGames) {
+        view.drawGames(safeGames);
     }
 
     @Override
