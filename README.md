@@ -12,7 +12,7 @@ Main influence
 Content
 -------
 * Android Model View Presenter implementation.
-* Dependency injection: Dagger scopes (Application / Activity graph).
+* Dependency injection: Dagger scopes (Application & Activity graphs).
 * Material design & material backward compatibility (```AppCompat``` library on old Android versions).
 
 Screenshots
