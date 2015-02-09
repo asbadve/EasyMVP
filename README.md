@@ -4,10 +4,10 @@ Sample project about standard Model-View-Presenter pattern usage with additional
 
 Main influence
 --------------
-* [EffectiveAndroidUI](https://github.com/pedrovgs/EffectiveAndroidUI) by **pedrovgs**.
-* [MvpCleanArquitecture](https://github.com/glomadrian/MvpCleanArchitecture/) by **glomadrian**.
-* [MaterializeYourApp](https://github.com/antoniolg/MaterializeYourApp) by **antoniolg**.
-* [UpcomingMoviesMVP](https://github.com/jlmd/UpcomingMoviesMVP) by **jlmd**.
+* [EffectiveAndroidUI](https://github.com/pedrovgs/EffectiveAndroidUI) by [pedrovgs](https://github.com/pedrovgs)
+* [MvpCleanArquitecture](https://github.com/glomadrian/MvpCleanArchitecture/) by [glomadrian](https://github.com/glomadrian)
+* [MaterializeYourApp](https://github.com/antoniolg/MaterializeYourApp) by [antoniolg](https://github.com/antoniolg)
+* [UpcomingMoviesMVP](https://github.com/jlmd/UpcomingMoviesMVP) by [jlmd](https://github.com/jlmd)
 
 Content
 -------
@@ -44,7 +44,7 @@ Developed By
 License
 -------
 
-    Copyright 2014 Pedro Vicente Gómez Sánchez
+    Copyright 2014 Jorge Castillo Pérez
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
