@@ -26,6 +26,8 @@ import com.github.jorgecastilloprz.easymvp.mvp.model.InterfaceColors;
 import javax.inject.Inject;
 
 /**
+ * Controls game details presentation logic. The view just needs to do the drawing.
+ *
  * @author Jorge Castillo Pérez
  */
 public class GameDetailsPresenterImpl implements LifecycleCallbacks, GameDetailsPresenter {

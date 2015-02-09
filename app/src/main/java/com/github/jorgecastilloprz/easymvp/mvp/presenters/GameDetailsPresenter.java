@@ -20,6 +20,8 @@ import android.graphics.Bitmap;
 import com.github.jorgecastilloprz.easymvp.mvp.model.Game;
 
 /**
+ * Game Details presenter abstraction to allow different implementations.
+ *
  * @author Jorge Castillo Pérez
  */
 public interface GameDetailsPresenter {
