@@ -20,11 +20,11 @@ import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.Toolbar;
 import android.transition.Slide;
 import android.view.MenuItem;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -33,6 +33,10 @@ import com.github.jorgecastilloprz.easymvp.R;
 import com.github.jorgecastilloprz.easymvp.mvp.model.Game;
 import com.github.jorgecastilloprz.easymvp.mvp.presenters.GameDetailsPresenterImpl;
 import com.github.jorgecastilloprz.easymvp.ui.BaseActivity;
+import com.github.jorgecastilloprz.easymvp.ui.animators.CardViewAnimationListener;
+import com.github.jorgecastilloprz.easymvp.ui.animators.CardViewAnimator;
+import com.github.jorgecastilloprz.easymvp.ui.animators.ToolbarAnimationListener;
+import com.github.jorgecastilloprz.easymvp.ui.animators.ToolbarAnimator;
 import com.melnykov.fab.FloatingActionButton;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
@@ -52,7 +56,7 @@ import butterknife.OnClick;
  *
  * @author Jorge Castillo Pérez
  */
-public class DetailsActivity extends BaseActivity implements GameDetailsPresenterImpl.View {
+public class DetailsActivity extends BaseActivity implements GameDetailsPresenterImpl.View, ToolbarAnimationListener, CardViewAnimationListener {
 
     public static final String GAME_EXTRA = "com.github.jorgecastilloprz.easymvp.gameExtra";
     public static final String SHARED_IMAGE_EXTRA = "sharedImage";
@@ -60,6 +64,10 @@ public class DetailsActivity extends BaseActivity implements GameDetailsPresente
 
     @Inject
     GameDetailsPresenterImpl gameDetailsPresenter;
+    @Inject
+    ToolbarAnimator toolbarAnimator;
+    @Inject
+    CardViewAnimator cardViewAnimator;
 
     @InjectView(R.id.detailsToolbar)
     Toolbar toolbar;
@@ -71,6 +79,8 @@ public class DetailsActivity extends BaseActivity implements GameDetailsPresente
     TextView titleText;
     @InjectView(R.id.description)
     TextView descriptionText;
+    @InjectView(R.id.cardContainer)
+    FrameLayout cardContainer;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -79,13 +89,14 @@ public class DetailsActivity extends BaseActivity implements GameDetailsPresente
         super.onCreate(savedInstanceState);
 
         setSupportActionBar(toolbar);
-        getSupportActionBar().hide();
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         excludeItemsFromTransitionIfLollipop();
         setImageTransition();
 
         Game game = Parcels.unwrap(getIntent().getExtras().getParcelable(GAME_EXTRA));
 
+        toolbarAnimator.attachToolbarAnimationListener(this);
+        cardViewAnimator.attachCardViewAnimationListener(this);
         setPresenterView();
         setPresenterGameModel(game);
     }
@@ -137,10 +148,15 @@ public class DetailsActivity extends BaseActivity implements GameDetailsPresente
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                gameDetailsPresenter.onUpButtonClick();
+                gameDetailsPresenter.onLeaveButtonClick();
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        gameDetailsPresenter.onLeaveButtonClick();
     }
 
     @OnClick(R.id.detailsFab)
@@ -167,13 +183,33 @@ public class DetailsActivity extends BaseActivity implements GameDetailsPresente
     }
 
     @Override
-    public void showAnimatedToolbar() {
-        getSupportActionBar().show();
+    public void hideInstantToolbar() {
+        toolbarAnimator.hideInstantToolbar(toolbar);
+    }
+
+    @Override
+    public void showDelayedToolbarAnimation() {
+        toolbarAnimator.showDelayedSmoothToolbar(toolbar);
+    }
+
+    @Override
+    public void hideSmoothToolbar() {
+        toolbarAnimator.hideSmoothToolbar(toolbar);
+    }
+
+    @Override
+    public void animateCardFadeIn() {
+        cardViewAnimator.animateCardIn(cardContainer);
+    }
+
+    @Override
+    public void animateCardFadeOut() {
+        cardViewAnimator.animateCardOut(cardContainer);
     }
 
     @Override
     public void getBackToMainScreen() {
-        onBackPressed();
+        super.onBackPressed();
     }
 
     @Override
@@ -246,5 +282,25 @@ public class DetailsActivity extends BaseActivity implements GameDetailsPresente
     @Override
     protected List<Object> getModules() {
         return null;
+    }
+
+    @Override
+    public void onToolbarTotallyDisplayed() {
+        /*Empty*/
+    }
+
+    @Override
+    public void onToolbarTotallyHidden() {
+        gameDetailsPresenter.onToolbarHidden();
+    }
+
+    @Override
+    public void onCardOutAnimationFinished() {
+        gameDetailsPresenter.onCardViewHidden();
+    }
+
+    @Override
+    public void onCardInAnimationFinished() {
+        /*Empty*/
     }
 }

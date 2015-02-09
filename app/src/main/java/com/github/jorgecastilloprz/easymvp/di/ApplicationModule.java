@@ -20,12 +20,18 @@ import android.net.ConnectivityManager;
 import android.view.LayoutInflater;
 
 import com.github.jorgecastilloprz.easymvp.EasyMVPApplication;
+import com.github.jorgecastilloprz.easymvp.ui.animators.CardViewAnimator;
+import com.github.jorgecastilloprz.easymvp.ui.animators.CardViewAnimatorImpl;
+import com.github.jorgecastilloprz.easymvp.ui.animators.ToolbarAnimatorImpl;
+import com.github.jorgecastilloprz.easymvp.ui.animators.ToolbarAnimator;
+
+import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
 
 /**
- * Dagger module used to inject application context and generic Android sdk needs
+ * Dagger module used to inject application context generic dependencies
  *
  * @author Jorge Castillo Pérez
  */
@@ -52,5 +58,13 @@ public class ApplicationModule {
     
     @Provides ConnectivityManager provideConnectivityManager() {
         return (ConnectivityManager) appContext.getSystemService(Context.CONNECTIVITY_SERVICE);
+    }
+    
+    @Provides @Singleton ToolbarAnimator provideToolbarAnimator(ToolbarAnimatorImpl toolbarAnimator) {
+        return toolbarAnimator;
+    } 
+    
+    @Provides @Singleton CardViewAnimator provideCardViewAnimator(CardViewAnimatorImpl cardAnimator) {
+        return cardAnimator;
     }
 }

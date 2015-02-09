@@ -13,30 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.jorgecastilloprz.easymvp.mvp.presenters;
+package com.github.jorgecastilloprz.easymvp.utils;
 
-import android.graphics.Bitmap;
-
-import com.github.jorgecastilloprz.easymvp.mvp.model.Game;
+import android.app.Activity;
+import android.util.DisplayMetrics;
 
 /**
  * @author Jorge Castillo Pérez
  */
-public interface GameDetailsPresenter {
+public class DisplayUtils {
     
-    void setView(GameDetailsPresenterImpl.View view);
-    
-    void setGameModel(Game game);
-    
-    void onLeaveButtonClick();
-    
-    void onFavouriteButtonClicked();
-    
-    void onBackgroundLoaded(Bitmap backgroundBitmap);
-    
-    void updateViewWithSafeGameDetails(Game game);
-    
-    void onToolbarHidden();
-    
-    void onCardViewHidden();
+    public static int getScreenHeight(Activity activity) {
+        DisplayMetrics metrics = new DisplayMetrics();
+        activity.getWindowManager().getDefaultDisplay().getMetrics(metrics);
+
+        return metrics.heightPixels;
+    }
 }

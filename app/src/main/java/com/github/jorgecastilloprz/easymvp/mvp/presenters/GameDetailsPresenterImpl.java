@@ -34,7 +34,7 @@ public class GameDetailsPresenterImpl implements LifecycleCallbacks, GameDetails
     private Game gameModel;
     private GenerateInterfaceColorsInteractor generateInterfaceColorsInteractor;
     private MarkGameAsFavouriteInteractor markGameAsFavouriteInteractor;
-
+    
     @Inject
     public GameDetailsPresenterImpl(GenerateInterfaceColorsInteractor generateInterfaceColorsInteractor, 
                                     MarkGameAsFavouriteInteractor markGameAsFavouriteInteractor) {
@@ -66,7 +66,9 @@ public class GameDetailsPresenterImpl implements LifecycleCallbacks, GameDetails
         view.loadBackgroundImage(gameModel.getImage());
         view.setTitle(gameModel.getName());
         view.setDescription(gameModel.getDescription());
-        view.showAnimatedToolbar();
+        view.hideInstantToolbar();
+        view.showDelayedToolbarAnimation();
+        view.animateCardFadeIn();
     }
 
     @Override
@@ -94,6 +96,16 @@ public class GameDetailsPresenterImpl implements LifecycleCallbacks, GameDetails
     }
 
     @Override
+    public void onToolbarHidden() {
+        view.animateCardFadeOut();
+    }
+
+    @Override
+    public void onCardViewHidden() {
+        view.getBackToMainScreen();
+    }
+
+    @Override
     public void onFavouriteButtonClicked() {
         markGameAsFavouriteInteractor.execute(gameModel.getId(), new MarkGameAsFavouriteInteractor.Callback() {
             @Override
@@ -109,8 +121,8 @@ public class GameDetailsPresenterImpl implements LifecycleCallbacks, GameDetails
     }
 
     @Override
-    public void onUpButtonClick() {
-        view.getBackToMainScreen();
+    public void onLeaveButtonClick() {
+        view.hideSmoothToolbar();
     }
 
     @Override
@@ -125,7 +137,15 @@ public class GameDetailsPresenterImpl implements LifecycleCallbacks, GameDetails
 
     public interface View {
         
-        void showAnimatedToolbar();
+        void hideInstantToolbar();
+        
+        void showDelayedToolbarAnimation();
+        
+        void hideSmoothToolbar();
+        
+        void animateCardFadeIn();
+        
+        void animateCardFadeOut();
         
         void getBackToMainScreen();
         
